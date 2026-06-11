@@ -1,288 +1,503 @@
-/* ==========================================================================
-   Global Themes & Variables
-   ========================================================================== */
-:root {
-  --primary: #4f46e5;
-  --primary-hover: #4338ca;
-  --bg-main: #f8fafc;
-  --bg-card: #ffffff;
-  --text-main: #1e293b;
-  --text-muted: #64748b;
-  --border: #e2e8f0;
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 14px;
-  --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-
-  /* Game-like Accents */
-  --xp-bar-bg: #e2e8f0;
-  --xp-bar-fill: linear-gradient(90deg, #6366f1 0%, #a855f7 100%);
-  --success: #22c55e;
-  --danger: #ef4444;
-  --warning: #f59e0b;
-}
-
 body {
-  background-color: var(--bg-main);
-  color: var(--text-main);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  line-height: 1.6;
-  margin: 0;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  max-width: 1800px;
+  margin: 20px auto;
+  padding: 0 20px;
+  background-color: #f4f7f6;
+  color: #333;
+}
+
+.main-container {
+  display: flex; /* 左右に並べる */
+  gap: 40px; /* 左右の余白 */
+  align-items: flex-start;
+  justify-content: space-between; /* 両端に寄せる */
+}
+
+.left-column {
+  width: 880px; /* 授業欄の横幅を2倍に拡大 (440px * 2) */
+  flex: 0 0 auto;
+}
+
+.right-column {
+  width: 440px; /* 履修管理状況を全体の約1/3の幅に調整 */
+  position: sticky;
+  top: 150px; /* 固定ヘッダーの高さに合わせて調整 */
+  max-height: calc(100vh - 170px); /* 画面からはみ出さないよう高さを制限 */
+  overflow-y: auto; /* 科目が増えた場合にリスト内スクロールを可能にする */
+  /* 枠のような見た目にする */
+  background-color: #fff;
   padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
 }
 
-/* ==========================================================================
-   Layout & Containers
-   ========================================================================== */
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: 1fr 350px;
-  gap: 24px;
-}
-
-@media (max-width: 900px) {
-  .container { grid-template-columns: 1fr; }
-}
-
-/* ==========================================================================
-   XP / Credit Gauge (Progress Bar)
-   ========================================================================== */
-.gauge-container {
-  background: var(--bg-card);
-  padding: 20px;
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
-  border: 1px solid var(--border);
-  margin-bottom: 24px;
-}
-
-.gauge-label {
+.summary-box {
+  background: #e9ecef;
+  padding: 15px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  font-weight: bold;
+  text-align: left;
   display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  margin-bottom: 8px;
-  font-weight: 700;
-  font-size: 0.9rem;
-  color: var(--text-muted);
+  flex-direction: column;
+  gap: 5px;
 }
 
-#top-earned-x {
-  font-size: 1.5rem;
-  color: var(--primary);
+@keyframes slideIn {
+  /* アニメーションを削除するため、このキーフレームは不要になります */
 }
 
-.gauge-bar {
-  height: 12px;
-  background: var(--xp-bar-bg);
-  border-radius: 999px;
-  overflow: hidden;
-  position: relative;
-}
-
-#top-earned-fill {
-  height: 100%;
-  background: var(--xp-bar-fill);
-  width: 0%; /* JS will update this */
-  transition: width 1s cubic-bezier(0.34, 1.56, 0.64, 1);
-  border-radius: 999px;
-}
-
-/* ==========================================================================
-   Course Cards (.class-item / .predefined-item)
-   ========================================================================== */
-.predefined-item, .class-item {
-  list-style: none;
-  margin-bottom: 12px;
-  transition: var(--transition);
-}
-
-.class-item {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: 16px;
+.input-area {
   display: flex;
-  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 0;
   align-items: center;
-  box-shadow: var(--shadow-sm);
-  cursor: default;
 }
 
-.predefined-item .class-item:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-lg);
-  border-color: var(--primary);
+.input-area select {
+  padding: 10px;
+  border: 2px solid #007bff;
+  border-radius: 4px;
+  background: white;
 }
 
-.class-item.added {
-  background: #f1f5f9;
-  border-left: 4px solid var(--primary);
-}
-
-.class-info strong {
-  font-size: 1.05rem;
-  display: block;
-  margin-bottom: 4px;
-}
-
-.class-meta {
+.input-row {
   display: flex;
-  gap: 6px;
+  gap: 10px;
+  margin-bottom: 10px;
   flex-wrap: wrap;
 }
 
-/* ==========================================================================
-   Badges
-   ========================================================================== */
-.badge {
-  font-size: 0.75rem;
-  padding: 2px 8px;
-  background: #f1f5f9;
-  color: var(--text-muted);
+#search-bar {
+  flex: 1;
+  padding: 10px;
+  border: 2px solid #007bff;
   border-radius: 4px;
-  font-weight: 500;
+  box-sizing: border-box;
 }
 
-.badge.required {
-  background: #fee2e2;
-  color: #b91c1c;
-}
-
-/* ==========================================================================
-   Buttons
-   ========================================================================== */
-button {
-  cursor: pointer;
-  font-family: inherit;
-  transition: var(--transition);
-  border: 1px solid transparent;
-  padding: 8px 14px;
-  border-radius: var(--radius-sm);
-  font-weight: 600;
-  font-size: 0.85rem;
-}
-
-.add-predefined, .complete-predefined {
-  background: var(--primary);
+#addBtn {
+  width: 100%;
+  padding: 12px;
+  background-color: #007bff;
   color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
 }
 
-.add-predefined:hover:not(:disabled), 
-.complete-predefined:hover:not(:disabled) {
-  background: var(--primary-hover);
-  transform: scale(1.03);
-}
+#addBtn:hover { background-color: #0056b3; }
 
-.detail-btn {
+.class-item {
   background: white;
-  border: 1px solid var(--border);
-  color: var(--text-main);
+  border-left: 5px solid #d1d5db;
+  padding: 15px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
-.detail-btn:hover {
-  background: var(--bg-main);
+/* 追加済みアイテムのグレーアウト表示 */
+.class-item.added {
+  background-color: #f0f0f0 !important;
+  border-left-color: #adb5bd !important;
+  opacity: 0.7;
+}
+
+.class-item.added .add-predefined, .class-item.added .complete-predefined {
+  background-color: #6c757d !important;
+  cursor: not-allowed;
 }
 
 .delete-btn {
-  background: transparent;
-  color: var(--text-muted);
+  background: #ff4d4f;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
-.delete-btn:hover {
-  color: var(--danger);
-  background: #fff1f2;
+.add-predefined {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.add-predefined:hover { background: #0056b3; }
+
+.complete-predefined {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.complete-predefined:hover { background: #218838; }
+
+.complete-btn {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 5px;
 }
 
-button:active {
-  transform: scale(0.96);
+.detail-btn {
+  background: #6c757d;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 5px;
 }
 
-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  filter: grayscale(1);
+.predefined-item {
+  margin-bottom: 10px;
 }
 
-/* ==========================================================================
-   Class Detail (Expanded Section)
-   ========================================================================== */
 .class-detail {
-  overflow: hidden;
+  /* 「詳細」エリアの初期状態：高さを0にして隠す */
   max-height: 0;
-  transition: max-height 0.4s cubic-bezier(0, 1, 0, 1);
-  background: #ffffff;
-  border: 1px solid var(--border);
-  border-top: none;
-  border-radius: 0 0 var(--radius-md) var(--radius-md);
-  padding: 0 16px;
-  margin-top: -12px;
-  margin-bottom: 12px;
+  overflow: hidden;
+  transition: all 0.3s ease-out;
+  background: #fff;
+  padding: 0 15px;
+  border-radius: 0 0 4px 4px;
 }
 
 .class-detail.open {
   max-height: 1000px;
-  padding: 16px;
-  transition: max-height 0.8s ease-in-out;
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  border-top: none;
 }
 
-/* ==========================================================================
-   Analysis Modal & Box
-   ========================================================================== */
-.analysis-box {
-  /* Override JS inline styles where possible */
-  border: none !important;
-  background: white !important;
-  padding: 0 !important;
+/* 右カラム見出しの装飾線 */
+.scheduled-title {
+  border-top: 5px solid #007bff;
+  padding-top: 10px;
+  margin-top: 20px;
 }
 
-.analysis-box p {
-  background: #f8fafc;
-  border: 1px solid var(--border);
-  padding: 14px;
-  border-radius: var(--radius-md);
-  margin-bottom: 12px !important;
-  display: flex;
-  flex-direction: column;
+.completed-title {
+  border-top: 5px solid #28a745;
+  padding-top: 10px;
+  margin-top: 30px;
 }
 
-/* ✔ and ✖ Styling */
-.analysis-box span[style*="color: green"], 
-.analysis-box span[style*="color: red"] {
-  font-size: 1.1rem;
-  padding: 2px 10px;
-  border-radius: 20px;
-  display: inline-block;
-  width: fit-content;
-  margin-top: 4px;
-}
-
-.analysis-box span[style*="color: green"] {
-  background: #dcfce7;
-  color: #166534 !important;
-}
-
-.analysis-box span[style*="color: red"] {
-  background: #fee2e2;
-  color: #991b1b !important;
-}
-
-/* ==========================================================================
-   Modals
-   ========================================================================== */
-.modal-content {
-  border-radius: var(--radius-lg);
-  padding: 32px;
+/* 必修分析ボタン */
+#analysis-btn {
+  padding: 12px 18px;
+  background-color: #1d4ed8;
+  color: white;
   border: none;
-  box-shadow: var(--shadow-lg);
-  animation: modalIn 0.3s ease-out;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 900;
+  white-space: nowrap;
+  box-shadow: 0 8px 18px rgba(29, 78, 216, 0.25);
+  border: 2px solid rgba(29, 78, 216, 0.35);
+}
+#analysis-btn:hover {
+  background-color: #1e40af;
+  transform: translateY(-1px);
+}
+#analysis-btn:active {
+  transform: translateY(0px);
+  box-shadow: 0 6px 14px rgba(29, 78, 216, 0.2);
 }
 
-@keyframes modalIn {
-  from { transform: translateY(20px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+/* アプリタイトル行 */
+.app-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.app-title-row h1 {
+  margin: 0;
+  font-size: 28px;
+}
+
+.top-credit-gauge {
+  min-width: 320px;
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 10px 14px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  border: 1px solid #e6eefc;
+}
+
+.top-credit-gauge .gauge-label {
+  display: inline-block;
+  font-size: 12px;
+  color: #4b5563;
+  margin-right: 8px;
+  font-weight: 700;
+}
+
+.top-credit-gauge .gauge-value {
+  font-weight: 900;
+  color: #0f172a;
+}
+
+.top-credit-gauge .gauge-bar {
+  margin-top: 8px;
+  height: 10px;
+  background: #e5e7eb;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.top-credit-gauge .gauge-fill {
+  height: 100%;
+  width: 0%;
+  background: #3b82f6;
+  transition: width 0.25s ease;
+}
+
+/* モーダル基本設定 */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  z-index: 2000;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+.modal-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 600px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 28px;
+  cursor: pointer;
+  color: #888;
+}
+.close-btn:hover { color: #333; }
+
+.class-detail .description {
+  font-size: 0.9em;
+  margin: 8px 0;
+  color: #555;
+  line-height: 1.4;
+}
+
+.class-detail .meta {
+  color: #888;
+}
+
+.syllabus-link {
+  font-size: 0.85em;
+  color: #007bff;
+  text-decoration: none;
+}
+
+/* フィルターUIのスタイル */
+.filter-container {
+  background: #fff;
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.filter-container select {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.category-highlight {
+  color: #e53e3e; /* 赤系の色 */
+  font-weight: bold;
+  background-color: #fff5f5; /* 薄い赤の背景 */
+  padding: 0 4px;
+  border-radius: 3px;
+  border: 1px solid #feb2b2;
+}
+
+/* 詳細画面のレイアウト改善 */
+.detail-subject {
+  margin: 0 0 10px 0;
+  font-size: 1.1em;
+  color: #2d3748;
+  border-bottom: 2px solid #edf2f7;
+  padding-bottom: 5px;
+}
+
+.detail-badges {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.badge-cat, .badge-item {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.85em;
+  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  height: 24px; /* 高さを一定にしてズレを防止 */
+  box-sizing: border-box;
+  border: 1px solid transparent; /* 枠線の有無による1〜2pxのガタつきを防止 */
+}
+
+.badge-cat { background: #edf2f7; color: #4a5568; border-color: #edf2f7; }
+.badge-cat.important { background: #fff5f5; color: #e53e3e; border: 1px solid #feb2b2; }
+.badge-item { background: #ebf8ff; color: #2b6cb0; border: 1px solid #bee3f8; }
+
+.detail-sections p {
+  margin: 6px 0;
+  font-size: 0.9em;
+  line-height: 1.5;
+}
+
+.detail-sections .description {
+  background: #f8fafc;
+  padding: 8px;
+  border-radius: 4px;
+}
+
+/* Footer Styles */
+.app-footer {
+  margin-top: 60px; /* メインコンテンツからの上部余白 */
+  padding: 30px 20px; /* 上下左右のパディング */
+  background-color: #f8f9fa; /* 薄いグレーの背景色 */
+  color: #6c757d; /* テキストの色 */
+  text-align: center; /* テキストを中央揃え */
+  font-size: 0.875em; /* 本文より少し小さい文字サイズ (例: 14px) */
+  line-height: 1.6; /* 行の高さ */
+  border-top: 1px solid #e9ecef; /* 上部に控えめな境界線 */
+}
+
+.app-footer p {
+  margin: 0; /* 段落のデフォルトマージンをリセット */
+  padding: 2px 0; /* 各行の上下にわずかなパディング */
+}
+
+/* Search Count Styles */
+.search-count {
+  font-size: 0.95em;
+  color: #666;
+  margin: -10px 0 15px 5px; /* 見出しとのバランス調整 */
+}
+
+.badge {
+  display: inline-block;
+  padding: 1px 8px;
+  font-size: 0.75rem;
+  border-radius: 4px;
+  background-color: #f3f4f6;
+  color: #4b5563;
+  border: 1px solid #d1d5db;
+  white-space: nowrap;
+}
+
+.badge.required {
+  background-color: #fee2e2;
+  color: #b91c1c;
+  border-color: #fca5a5;
+}
+
+/* 上部操作エリアの固定表示 */
+.sticky-controls {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background-color: white;
+  padding: 15px 0 20px 0;
+  border-bottom: 2px solid #e5e7eb;
+  margin-bottom: 25px;
+  /* 背景を透過させないため、bodyの背景色に合わせた透過防止（または完全な白） */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* 使い方ボタン（右下固定） */
+#tutorial-btn {
+  position: fixed;
+  bottom: 25px;
+  right: 20px; /* 少し内側に調整 */
+  padding: 10px 18px; /* テキストに合わせてパディングを調整 */
+  border-radius: 25px; /* 角丸の長方形に */
+  background-color: #007bff; /* 青色 */
+  color: white;
+  border: none;
+  font-size: 18px; /* 文字サイズを調整 */
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  z-index: 3000; /* 他の要素より上に表示 */
+  transition: transform 0.2s, background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#tutorial-btn:hover {
+  transform: scale(1.1);
+  background-color: #0056b3;
+}
+
+/* 使い方モーダル内のレイアウト調整 */
+.tutorial-content {
+  max-width: 500px;
+}
+
+.tutorial-content h1 {
+  font-size: 1.5rem;
+  border-bottom: 2px solid #007bff;
+  padding-bottom: 8px;
+  margin-bottom: 15px;
+}
+
+.tutorial-section {
+  margin-top: 15px;
+  text-align: left;
+}
+
+.disclaimer-box {
+  background: #f8f9fa;
+  padding: 12px;
+  border-radius: 5px;
+  margin-top: 15px;
+  border: 1px solid #e9ecef;
 }

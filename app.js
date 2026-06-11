@@ -783,13 +783,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   setupAnalysisModal();
   setupTutorialModal();
 
-  // ブラウザのセキュリティ制限（CORS）のチェック
-  if (window.location.protocol === 'file:') {
-    alert('【重要】ブラウザの制限により、ファイルから直接開くとデータを読み込めません。\nVS Codeの「Live Server」などを使用して実行してください。');
-    console.error('CORS Error: JSON files cannot be fetched via file:// protocol.');
-    return;
-  }
-
   // 外部JSONから授業データを読み込む
   let loadErrorTimer = null; // 通信エラーアラートの遅延表示用タイマー
   try {
@@ -831,9 +824,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     state.predefinedData = normalizedData;
     state.coursesMap = new Map(normalizedData.map(item => [item.id, item]));
 
+    // 3秒以内に読み込みが完了した場合は、もし予約されていたエラーアラートがあればキャンセルする
+    if (loadErrorTimer) clearTimeout(loadErrorTimer);
     renderAll(); // データロード後にクリーンアップを含めて再描画
   } catch (error) {
     console.error('データの読み込みに失敗しました:', error);
+    // GitHub Pagesの初回読み込み遅延等による誤検知を防ぐため、3秒待機してからアラートを表示する。
     loadErrorTimer = setTimeout(() => {
       alert('授業データの読み込みに失敗しました。VS Codeの Live Server などを使用して開いてください。');
     }, 3000);
